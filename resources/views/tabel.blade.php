@@ -72,7 +72,7 @@
                         <div class="form-group">
                             <label for="jam_masuk">Jam Masuk</label>
                             <input type="text" class="form-control" placeholder="Jam Masuk" name="jam_masuk"
-                                value="{{ \Carbon\Carbon::now()->format('H:i:m') }}" readonly>
+                                value="{{ \Carbon\Carbon::now()->format('H:i') }}" readonly>
                         </div>
                         <div class="form-group">
                             <label for="jenis_kendaraan">Jenis Kendaraan</label>
@@ -95,7 +95,7 @@
                     <h1 class="modal-title fs-5" id="modalCheckOutLabel">Modal title</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form action="{{route('store')}}" method="post">
+                <form action="{{route('storecheckout')}}" method="post">
                     @csrf
                     <div class="modal-body">
                         <div class="form-group">
@@ -108,6 +108,7 @@
                             </select>
                         </div>
                         <div class="row">
+                            <input type="hidden" name="id" id="id">
                             <div class="form-group col-6">
                                 <label for="tanggal_masuk">Tanggal Masuk</label>
                                 <input type="text" class="form-control" placeholder="Tanggal Masuk" id="tanggal_masuk" name="tanggal_masuk"
@@ -149,6 +150,18 @@
 
     <script>
         $(document).ready(function(){
+            $('#jam_keluar').on('change', function(){
+                var jam_masuk  = $('#jam_masuk').val();
+                var jam_keluar = $(this).val();
+                var timeDiff = jam_keluar - jam_masuk; //in ms
+                // strip the ms
+                timeDiff /= 1000;
+
+                // get seconds 
+                var seconds = Math.round(timeDiff);
+                console.log(seconds + " seconds");
+                // console.log(jam);
+            });
             $('#nomor_polisi').on('change',function(){
                 var optionText = $("#nomor_polisi option:selected").val();
                 console.log(optionText);
@@ -162,10 +175,10 @@
                     dataType: 'json',
                     success: function (data) {
                         console.log(data);
+                        $('#id').val(data.id);
                         $('#tanggal_masuk').val(data.tanggal_masuk);
                         $('#jam_masuk').val(data.jam_masuk);
-                        $('#jenis_kendaraan').val();
-                        $('#biaya_parkir').val();
+                        $('#jenis_kendaraan').val(data.jenis_kendaraan);
                     },
                     error: function (data) {
                         console.log('Error:', data);

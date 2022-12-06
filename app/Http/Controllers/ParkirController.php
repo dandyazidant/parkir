@@ -50,10 +50,10 @@ class ParkirController extends Controller
         return redirect()->route('index');
     }
 
-    public function storecheckout(Request $request, $id)
+    public function storecheckout(Request $request)
     {
         $posted = $request->all();
-        $parkir = Parkir::find($id);
+        $parkir = Parkir::find($request->id);
         
         $parkir->tanggal_keluar = $posted['tanggal_keluar'];
         $parkir->jam_keluar = $posted['jam_keluar'];
